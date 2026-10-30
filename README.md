@@ -1,5 +1,5 @@
 # DocsAnalyser — AI-Powered PDF Assistant
-
+![DocsAnalyser Banner](assets/docsanalyser-banner.png)
 DocsAnalyser is a full-stack AI-powered document analysis application that allows users to upload PDF documents and ask questions in natural language. It uses Retrieval-Augmented Generation (RAG) to retrieve relevant information and generate context-aware answers with source citations.
 
 Built using **React, FastAPI, Google Gemini, and Pinecone**.
