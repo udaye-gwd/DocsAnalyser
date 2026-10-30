@@ -12,7 +12,7 @@ from rag_engine import RAGEngine
 
 load_dotenv()
 
-app = FastAPI(title="RAG PDF Chatbot API")
+app = FastAPI(title="Docs Analyser API")
 
 # Allow React frontend to talk to this backend
 app.add_middleware(

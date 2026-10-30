@@ -1,105 +1,136 @@
-# RAG PDF Chatbot — Full Stack
+# DocsAnalyser — AI-Powered PDF Assistant
 
-A full-stack AI-powered document chatbot built with FastAPI and React. Upload any PDF, ask questions in natural language, and get accurate answers with source citations — powered by Gemini embeddings and Pinecone vector search.
+DocsAnalyser is a full-stack AI-powered document analysis application that allows users to upload PDF documents and ask questions in natural language. It uses Retrieval-Augmented Generation (RAG) to retrieve relevant information and generate context-aware answers with source citations.
 
-![Python](https://img.shields.io/badge/Python-3.11-blue?style=flat&logo=python)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-green?style=flat&logo=fastapi)
-![React](https://img.shields.io/badge/React-18-61DAFB?style=flat&logo=react)
-![Gemini](https://img.shields.io/badge/Gemini-2.5_Flash-orange?style=flat&logo=google)
-![Pinecone](https://img.shields.io/badge/Pinecone-Vector_DB-purple?style=flat)
+Built using **React, FastAPI, Google Gemini, and Pinecone**.
+
+![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-green?logo=fastapi)
+![React](https://img.shields.io/badge/React-Frontend-61DAFB?logo=react)
+![Gemini](https://img.shields.io/badge/Google-Gemini-orange?logo=google)
+![Pinecone](https://img.shields.io/badge/Database-Pinecone-purple)
 
 ---
 
 ## 🚀 Demo Preview
 
-### Homepage & Upload
+### Homepage & PDF Upload
 ![Homepage](assets/Homepage.png)
 
-### RAG Response with Source Citations
+### AI Responses with Source Citations
 ![Chat Response](assets/chat_response.png)
 
 ---
 
-## ✨ Key Highlights
+## ✨ Features
 
-- Built a full-stack RAG (Retrieval-Augmented Generation) system using FastAPI and React
-- Integrated Gemini Embedding API to convert PDF chunks into 3072-dimensional semantic vectors
-- Implemented vector similarity search using Pinecone to retrieve the most relevant document passages
-- Used Gemini 2.5 Flash LLM to generate accurate, context-grounded answers with inline source citations
-- Supports both a terminal chatbot mode and a premium web UI — both powered by the same RAG engine
-- Designed a dark glassmorphism UI with mouse-interactive aurora glow and floating particle animations
-
----
+- Upload PDF documents through an interactive web interface.
+- Extract and process PDF content automatically.
+- Convert document text into semantic embeddings using Gemini.
+- Store and retrieve document vectors using Pinecone.
+- Ask questions in natural language.
+- Generate context-aware answers using Gemini 2.5 Flash.
+- Display source references to help verify answers.
+- Support follow-up questions through conversation history.
 
 ## 🎯 Use Cases
 
-- Chat with your resume, research papers, or any PDF document
-- Ask follow-up questions with full conversation memory
-- Get answers with exact page citations so you can verify the source
-- Index multiple PDFs and search across all of them at once
+- Analyse resumes and professional documents.
+- Understand research papers and technical documents.
+- Extract important information from study materials.
+- Ask questions about lengthy PDF files.
+- Quickly search and understand document content.
 
 ---
 
-## 🧠 Architecture
+## 🧠 System Architecture
 
-```
-┌─────────────────────────────────────────────────────┐
-│                   React Frontend                     │
-│        (Drag-drop Upload · Chat UI · Citations)      │
-└──────────────────────┬──────────────────────────────┘
-                       │ HTTP (POST /upload, POST /query)
-┌──────────────────────▼──────────────────────────────┐
-│                  FastAPI Backend                     │
-│                                                      │
-│  ┌──────────────────────────────────────────────┐   │
-│  │               rag_engine.py                  │   │
-│  │                                              │   │
-│  │  PDF bytes                                   │   │
-│  │    → pypdf (extract text)                    │   │
-│  │    → LangChain RecursiveCharacterTextSplitter│   │
-│  │    → Gemini Embedding API (3072 dimensions)  │   │
-│  │    → Pinecone (store vectors + metadata)     │   │
-│  │                                              │   │
-│  │  User question                               │   │
-│  │    → Gemini Embedding API (query vector)     │   │
-│  │    → Pinecone similarity_search (top 5)      │   │
-│  │    → Gemini 2.5 Flash (answer + citations)   │   │
-│  └──────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────┘
+```text
+             React Frontend
+                   |
+             HTTP Requests
+                   |
+             FastAPI Backend
+                   |
+               RAG Engine
+                   |
+          PDF Text Extraction
+                   |
+          Text Chunk Processing
+                   |
+          Gemini Embeddings
+                   |
+           Pinecone Vector DB
+                   |
+           Similarity Search
+                   |
+          Gemini 2.5 Flash
+                   |
+          AI Answer + Sources
+                   |
+             React Frontend
 ```
 
-**Flow:**
-- PDF is split into 1000-character overlapping chunks by LangChain
-- Each chunk is converted to a 3072-number vector by Gemini Embedding API
-- Vectors are stored permanently in Pinecone with file + page metadata
-- On a query, the question is embedded and Pinecone finds the top 5 closest chunks using cosine similarity
-- The retrieved chunks + question are sent to Gemini 2.5 Flash to generate a grounded answer
-- Answer and source citations are returned to the frontend
+### How It Works
+
+1. The user uploads a PDF document.
+2. The backend extracts text from the PDF.
+3. LangChain splits the extracted text into smaller chunks.
+4. Gemini converts the chunks into numerical embeddings.
+5. Pinecone stores the embeddings and associated metadata.
+6. When a question is asked, it is converted into an embedding.
+7. Pinecone retrieves the most relevant document chunks.
+8. Gemini generates an answer using the retrieved context.
+9. The frontend displays the answer and its sources.
+
+---
+
+## 🛠️ Technology Stack
+
+### Frontend
+- React 18
+- Vite
+- JavaScript
+- Axios
+- Lucide React
+- Custom CSS
+
+### Backend
+- Python
+- FastAPI
+- Uvicorn
+- LangChain
+- pypdf
+
+### AI & Database
+- Google Gemini Embedding API
+- Gemini 2.5 Flash
+- Pinecone Vector Database
 
 ---
 
 ## 📁 Project Structure
 
-```
-rag-pdf-chatbot/
+```text
+DocsAnalyser/
+│
+├── assets/
 │
 ├── backend/
-│   ├── main.py           ← FastAPI server — exposes RAG as HTTP endpoints
-│   ├── chat.py           ← Terminal chatbot — run directly without browser
-│   ├── rag_engine.py     ← Core RAG logic shared by both main.py and chat.py
-│   ├── requirements.txt  ← Python packages
-│   ├── .env.example      ← API keys template
-│   └── .env              ← Your actual keys (create this, never commit)
+│   ├── main.py
+│   ├── chat.py
+│   ├── rag_engine.py
+│   ├── requirements.txt
+│   ├── .env.example
+│   └── .env
 │
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── Sidebar.jsx   ← Drag-drop PDF upload panel
-│   │   │   └── Message.jsx   ← Chat bubble + collapsible source citations
-│   │   ├── App.jsx           ← Main app, mouse-interactive aurora background
-│   │   ├── api.js            ← Axios calls to FastAPI backend
-│   │   ├── main.jsx          ← React entry point
-│   │   └── index.css         ← Full design system — glassmorphism, animations
+│   │   ├── App.jsx
+│   │   ├── api.js
+│   │   ├── main.jsx
+│   │   └── index.css
 │   ├── index.html
 │   ├── package.json
 │   └── vite.config.js
@@ -109,182 +140,108 @@ rag-pdf-chatbot/
 
 ---
 
-## 🛠️ Tech Stack
-
-**Frontend**
-- React 18 + Vite
-- Custom CSS — dark glassmorphism, mouse-tracking aurora glow, floating particles
-- Axios — API calls to backend
-- Lucide React — icons
-
-**Backend**
-- FastAPI + Uvicorn
-- LangChain — RAG pipeline, text splitting, message formatting
-- pypdf — PDF text extraction
-
-**AI & Vector Search**
-- Gemini Embedding API (`gemini-embedding-001`) — 3072-dimensional semantic embeddings
-- Gemini 2.5 Flash — answer generation with source citations
-- Pinecone — cloud vector database with cosine similarity search
-
----
-
-## ⚠️ Python Version — IMPORTANT
-
-This project requires **Python 3.11**. It does NOT work on Python 3.12, 3.13, or 3.14 due to LangChain dependency compatibility issues.
-
-### Check your Python version
-
-```bash
-python --version
-```
-
-If it shows `3.11.x` you are good. If it shows anything else, follow these steps:
-
-### Check if Python 3.11 is already installed
-
-```bash
-py -3.11 --version
-```
-
-If it shows `Python 3.11.x` it is already installed — skip to the setup steps below.
-
-### Install Python 3.11 (only if needed)
-
-Download from: https://www.python.org/downloads/release/python-3119/
-
-Scroll to "Files" and download **Windows installer (64-bit)**.
-Check **"Add Python to PATH"** during installation.
-
-### Always create venv using Python 3.11
-
-```bash
-py -3.11 -m venv venv
-```
-
-This forces the virtual environment to use 3.11 regardless of your global default.
-
-> Note: VS Code's status bar may show Python 3.14 — that is the global version, ignore it.
-> What matters is `python --version` inside the activated venv showing 3.11.
-
----
-
-## 🚀 Getting Started
+## ⚙️ Getting Started
 
 ### Prerequisites
 
-- Python 3.11
-- Node.js 18+
-- Free [Gemini API key](https://aistudio.google.com/app/apikey)
-- Free [Pinecone API key](https://app.pinecone.io)
+- Python 3.12
+- Node.js and npm
+- Google Gemini API key
+- Pinecone API key
 
----
+Get your API keys:
 
-## OPTION A — Terminal Mode (no browser needed)
+- [Google AI Studio](https://aistudio.google.com/app/apikey)
+- [Pinecone](https://app.pinecone.io/)
+
+### 1. Clone the Repository
 
 ```bash
+git clone https://github.com/udaye-gwd/DocsAnalyser.git
+cd DocsAnalyser
+```
+
+### 2. Configure the Backend
+
+```powershell
 cd backend
-
-py -3.11 -m venv venv            # Windows
-python3.11 -m venv venv          # Mac/Linux
-
-venv\Scripts\Activate.ps1        # Windows PowerShell
-source venv/bin/activate         # Mac/Linux
-
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
 pip install -r requirements.txt
-
-copy .env.example .env           # Windows
-cp .env.example .env             # Mac/Linux
 ```
 
-Fill in your API keys in `.env`, then run:
+### 3. Configure Environment Variables
 
-```bash
-python chat.py
+Create a `.env` file inside the `backend` folder.
+
+```env
+GEMINI_API_KEY=your_gemini_api_key
+PINECONE_API_KEY=your_pinecone_api_key
+PINECONE_INDEX_NAME=doc-chatbot
 ```
 
----
+Add your actual API keys before starting the application.
 
-## OPTION B — Full Web UI (FastAPI + React)
+### 4. Start the Backend
 
-Requires **two terminals** open at the same time.
+From the `backend` folder, run:
 
-### Terminal 1 — Backend
-
-```bash
-cd backend
-py -3.11 -m venv venv
-venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-copy .env.example .env           # fill in your keys
-uvicorn main:app --reload
+```powershell
+python -m uvicorn main:app --reload
 ```
 
-Backend runs at: **http://localhost:8000**
+Backend URL: `http://127.0.0.1:8000`
 
-### Terminal 2 — Frontend
+API documentation: `http://127.0.0.1:8000/docs`
 
-```bash
+### 5. Start the Frontend
+
+Open a second terminal:
+
+```powershell
 cd frontend
 npm install
 npm run dev
 ```
 
-Frontend runs at: **http://localhost:5173**
+Frontend URL: `http://localhost:5173`
 
-Open **http://localhost:5173** in your browser.
-
-**Every time you come back to the project:**
-1. Terminal 1 → `cd backend` → `venv\Scripts\Activate.ps1` → `uvicorn main:app --reload`
-2. Terminal 2 → `cd frontend` → `npm run dev`
-3. Open `http://localhost:5173`
-
----
-
-## 🖥️ Usage (Web UI)
-
-1. Drag and drop PDF files into the left sidebar
-2. Wait for the **"chunks indexed"** confirmation
-3. Type your question in the input box and press **Enter**
-4. Expand **Sources** under any answer to see exact page citations
+Open the frontend URL in your browser to use DocsAnalyser.
 
 ---
 
 ## 📡 API Endpoints
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/health` | Check if backend is alive |
-| POST | `/upload` | Upload and index a PDF file |
-| POST | `/query` | Ask a question, returns answer + sources |
+|---|---|---|
+| GET | `/` | Backend status |
+| GET | `/health` | Health check |
+| POST | `/upload` | Upload and index a PDF |
+| POST | `/query` | Ask questions about documents |
 
 ---
 
-## 🔑 Environment Variables
+## 🔐 Environment Variables
 
-Create a `.env` file inside `backend/` with the following:
+| Variable | Description |
+|---|---|
+| `GEMINI_API_KEY` | Google Gemini API key |
+| `PINECONE_API_KEY` | Pinecone API key |
+| `PINECONE_INDEX_NAME` | Pinecone index name |
 
-```
-GEMINI_API_KEY=your_gemini_api_key_here
-PINECONE_API_KEY=your_pinecone_api_key_here
-PINECONE_INDEX_NAME=doc-chatbot
-```
-
-| Variable | Description | Get it here |
-|----------|-------------|-------------|
-| `GEMINI_API_KEY` | Google Gemini API key | https://aistudio.google.com/app/apikey |
-| `PINECONE_API_KEY` | Pinecone vector DB key | https://app.pinecone.io |
-| `PINECONE_INDEX_NAME` | Name for your Pinecone index | Any name e.g. `doc-chatbot` |
-
-> Never commit your `.env` file — it is already in `.gitignore`
+**Security:** Never upload your `.env` file or expose API keys publicly.
 
 ---
 
-## 📝 Notes
+## 👨‍💻 Developer
 
-- `chat.py` and `main.py` both use the same `rag_engine.py` — the RAG logic is shared
-- PDFs stay indexed in Pinecone permanently — no need to re-upload on restart
-- Gemini free tier: ~750 questions per day (each question = 2 API calls)
-- Pinecone free tier: 100,000 vectors (enough for hundreds of PDFs)
-- Always use `py -3.11 -m venv venv` to avoid Python version issues
-- The `venv/` and `.env` files are excluded from Git via `.gitignore`
+**Uday Kiran**
+
+GitHub: [udaye-gwd](https://github.com/udaye-gwd)
+
+Project: [DocsAnalyser](https://github.com/udaye-gwd/DocsAnalyser)
+
+---
+
+*DocsAnalyser — Making document understanding smarter with AI.*
